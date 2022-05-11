@@ -17,7 +17,7 @@ drawings:
   persist: false
 ---
 
-# Journey of a Cart
+# Journey of the Cart
 
 Don't break the wheels
 
@@ -59,6 +59,7 @@ Don't break the wheels
   </div>
 
   <div class="flex flex-col items-center space-y-4">
+    <img class="object-cover w-16 absolute top-280px right-200px" src="/img/0815.svg">
     <img class="object-cover w-48 h-48 rounded-full" src="/img/me.jpg">
     <div class="space-y-1 font-medium dark:text-white">
         <div class="text-sm text-gray-500 dark:text-gray-400 italic"> &lt;Coding&gt;4 LifeBalance&lt;/Coding&gt; </div>
@@ -95,8 +96,8 @@ clicks: 2
 ```mermaid {theme: 'neutral', scale: 0.8}
 flowchart TD
 B[Customer] --> C{Add/Remove Product}
-C -->|Add| D[Cart Object gets created if it doesn't exist]
-C -->|Remove| E[LineItem gets removed from cart]
+C -->|Add| D[Cart Object created if it doesn't exist]
+C -->|Remove| E[LineItem removed from cart]
 D --> F[...]
 E --> F
 ```
@@ -193,7 +194,7 @@ clicks: 6
 
   <v-clicks at="3">
 
-  - Product LineItem store
+  - Product data store
   - Promotions data store
   - Shipping method data store
 
@@ -201,7 +202,7 @@ clicks: 6
 
 <v-clicks at="6">
 
-- Contains entire product data for the corresponding LineItem (key = "product-&lt;LineItemUuid&gt;")
+- Contains entire product data for the corresponding LineItem (key = "product-&lt;Uuid&gt;")
 - Is used to keep track of product data inside the cart
 
 </v-clicks>
@@ -583,7 +584,7 @@ Personal thoughts 🤔
 - Doesn't solve the problem of bloated cart data which might get stored
 - Think about the redis setup
   - Deployments might delete all customer carts which are stored in redis
-- Doesn't solve the problem of one *"unnecessary"* request by adding a product to the cart (redirect offcanvas)
+- Doesn't solve the problem of one *"unnecessary"* request which happens by adding a product to the cart (redirect offcanvas)
 
 </v-clicks>
 
@@ -598,7 +599,7 @@ layout: fact
 
 # Save the Date 24.06.2022
 
-Talk **"Journey of a cart"** at mooncom
+Talk **"Journey of the cart"** at mooncom
 
 All topics of today + **How long a cart should actually live** 😉
 
