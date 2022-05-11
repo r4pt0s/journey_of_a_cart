@@ -37,24 +37,24 @@ Don't break the wheels
 
   <div class="flex flex-col gap-5">
   <div>
-    <span>🧑‍💻 Name </span>
+    <h4 >🧑‍💻 Name </h4>
     <br/>
-    <span>Wolfgang Kreminger</span>
+    <span class="overline" >Wolfgang Kreminger</span>
   </div>
   <div>
-    <span>🎨 Role </span>
+    <h4>🎨 Role </h4>
     <br/>
-    <span>Fullstack Developer</span>
+    <span class="overline" >Fullstack Developer</span>
   </div>
   <div>
-    <span>🔨 I work for </span>
+    <h4>🔨 I work for </h4>
     <br/>
-    <span> 0815 Onlinehandel GmbH</span>
+    <span class="overline" > 0815 Onlinehandel GmbH</span>
   </div>
   <div>
-    <span>🤣 One job is not enough </span>
+    <h4>🤣 One job is not enough </h4>
     <br/>
-    <span> Teaching assistant at zerotomastery.io</span>
+    <span class="overline" > Teaching assistant at zerotomastery.io</span>
   </div>
   </div>
 
@@ -66,7 +66,7 @@ Don't break the wheels
   </div>
 </div>
 
-<div v-click class="absolute bottom-150px uppercase font-bold animate-bounce text-cyan-400">
+<div v-click class="absolute bottom-100px right-80px uppercase font-bold animate-bounce text-cyan-400">
   let's jump right into it ->
 </div>
 
@@ -77,6 +77,11 @@ Don't break the wheels
   </span>
 </div>
 
+<!--
+Talk about myself
+
+use the list points
+-->
 
 ---
 clicks: 2
@@ -117,7 +122,13 @@ E --> id1[(save)]
 
 <arrow v-click="2" x1="300" y1="360" x2="443" y2="360" color="#F00" width="3" arrowSize="1" />
 
+<!--
+How a cart object gets generate
 
+Start at customer
+
+All applied processor means all of the CartProcessors
+-->
 
 ---
 layout: full
@@ -155,6 +166,13 @@ layout: full
 
 </v-clicks>
 
+<!--
+Why good and evil?
+
+Talk about the analogy with kitchen rolls and toilet paper packages which you put into the cart first.
+
+Reordering of those packages is comparable to a bloated cart object
+-->
 
 ---
 layout: full
@@ -369,6 +387,9 @@ class CartVerifyPersistSubscriber implements EventSubscriberInterface
   <mdi-vacuum class="absolute top-352px right-150px text-9xl animate-pulse"/>
 </div>
 
+<!--
+only run the cleanup in case the cart should get perisisted. Otherwise there is no product add or remove called
+-->
 
 ---
 
@@ -412,7 +433,7 @@ layout: full
 
 - `@Route "/checkout/offcanvas"` uses ` Shopware\Storefront\Page\Checkout\Offcanvas\OffcanvasCartPageLoader::load `
 - `OffcanvasCartPageLoader::load` method uses `Shopware\Core\Checkout\Cart\SalesChannel\CartService::get`
-- `CartService::get` will load the entire cart from the database again altough we already have it in our line-item/add route 🤔
+- `CartService::get` will load the entire cart from the database again (+ deserialization) altough we already have it in our line-item/add route 🤔
 
 </v-clicks>
 
@@ -513,6 +534,10 @@ private function getShippingMethods(SalesChannelContext $context): ShippingMetho
 }
 ```
 
+<!--
+The shipping methods are necessary here because if the shipping method dropdown which is available in the offcanvas
+-->
+
 ---
 layout: full
 ---
@@ -561,6 +586,11 @@ Personal thoughts 🤔
 - Doesn't solve the problem of one *"unnecessary"* request by adding a product to the cart (redirect offcanvas)
 
 </v-clicks>
+
+<div v-click="5">
+
+✅ You can totally use the same code also if you use the RedisCartPersister
+</div>
 
 ---
 layout: fact
