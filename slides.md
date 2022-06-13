@@ -549,12 +549,10 @@ layout: full
 // custom/plugins/ExamplePlugin/src/Resources/config/services.xml
 ```
 ```xml
-<service id="XgxCartExtension\Storefront\Controller\CartLineItemController"
+<service id="ExamplePlugin\Storefront\Controller\CartLineItemController"
          decorates="Shopware\Storefront\Controller\CartLineItemController">
     <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
     <argument type="service" id="sales_channel.product.repository"/>
-    <argument type="service" id="Shopware\Core\Checkout\Promotion\Cart\PromotionItemBuilder"/>
-    <argument type="service" id="Shopware\Core\Content\Product\Cart\ProductLineItemFactory"/>
     <argument type="service" id="Shopware\Core\Framework\Util\HtmlSanitizer"/>
     <argument type="service" id="ExamplePlugin\Storefront\Page\Checkout\Offcanvas\CartToPageLoader"/>
     <call method="setContainer">
@@ -562,7 +560,7 @@ layout: full
     </call>
 </service>
 
-<service id="XgxCartExtension\Storefront\Page\Checkout\Offcanvas\CartToPageLoader">
+<service id="ExamplePlugin\Storefront\Page\Checkout\Offcanvas\CartToPageLoader">
     <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
     <argument type="service" id="Shopware\Core\Checkout\Shipping\SalesChannel\ShippingMethodRoute"/>
     <argument type="service" id="event_dispatcher"/>
