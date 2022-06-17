@@ -592,23 +592,270 @@ Personal thoughts 🤔
 </div>
 
 ---
+layout: full
+---
+
+# Lifetime of a cart object in the data store
+
+## Shopware default behaviour
+
+<v-clicks v-click="1">
+
+- Customer enjoys searching around in the online shop
+- Customer adds products to the cart
+- Customer proceeds through the checkout
+- Customer finializes the checkout with the payment process and hits the finish checkout button
+
+</v-clicks>
+
+<blockquote v-click="5"
+     v-motion
+    :initial="{ x: -80, opacity: 0}"
+    :enter="{ x: 0, opacity: 1, transition: { delay: 1000, duration: 1000 } }"
+    class="flex uppercase font-bold w-full justify-center mt-18">
+  <p class="mb-4 p-4 text-3xl">All good right?</p>
+</blockquote>
+
+<blockquote v-click="6"
+     v-motion
+    :initial="{ x: -80, opacity: 0}"
+    :enter="{ x: 0, opacity: 1, transition: { delay: 1000, duration: 1000 } }"
+    class="flex uppercase font-bold w-full justify-center mt-18">
+  <p class="mb-4 p-4 text-3xl">Kind of 😅</p>
+</blockquote>
+
+---
+layout: full
+---
+
+# Lifetime of a cart object in the data store
+
+## Shopware default behaviour
+
+
+<h3 v-click="1">
+  Something went wrong while fininalizing the Order 🤔
+</h3>
+
+<v-clicks v-click="2" class="mt-8 mr-64">
+
+- If the payment process failed, cart gets still deleted from the data store (not available for the customer anymore)
+- Customer might not be satisfied because it looks like the cart is gone and products need to get added from scratch again
+- Of course, there is the account/order/edit page, but cart can't get changed anymore (just the payment method)
+- In the end it's like a dead end of the customer journey
+
+</v-clicks>
+
+<blockquote v-click="6"
+     v-motion
+    :initial="{ x: -80, opacity: 0}"
+    :enter="{ x: 0, opacity: 1, transition: { delay: 1000, duration: 1000 } }"
+    class="flex uppercase font-bold w-full justify-center mt-12">
+  <p class="mb-4 p-4 text-3xl">Still all good?</p>
+</blockquote>
+
+---
+layout: full
+clicks: 4
+---
+
+# Expected lifetime of a cart
+
+
+<v-clicks v-click="1">
+
+- In case something went wrong, cart should not get dropped
+- Customer should have the ability to change the cart till the order is finially finished
+- It should always be possible to jump back and forth between payment and the cart
+
+</v-clicks>
+
+
+<div class="text-8xl absolute animate-bounce" style="bottom:38%;left:44%">
+  <span v-click="3" class="">🕺</span>
+</div>
+
+<div class="text-6xl absolute" style="bottom:10%;left:31%">
+ <span v-click="1">🙂</span>
+ <span v-click="2">=></span>
+ <span v-click="2">😀</span>
+ <span v-click="3">=></span>
+ <span v-click="3">😄</span>
+</div>
+---
+layout: full
+---
+
+# One possible solution
+
+
+<v-clicks v-click="1">
+
+- At the point where shopware drops the cart (cart to order conversion), add the cart back to the data store
+- Add "Modify cart" button to the account/order/edit page or redirect to checkout/confirm directly
+- Store the current order ID in the user session on finalize order button click
+- Check if a order ID is stored in the user session if yes, cancel old order before creating new one
+- If customer reaches the final order page, finially drop the cart from data store
+
+</v-clicks>
+
+<blockquote v-click="6"
+     v-motion
+    :initial="{ x: -80, opacity: 0}"
+    :enter="{ x: 0, opacity: 1, transition: { delay: 1000, duration: 1000 } }"
+    class="flex uppercase font-bold w-full justify-center mt-18">
+  <p class="mb-4 p-4 text-3xl">That's it, nothing more to do 😆</p>
+</blockquote>
+
+---
+layout: full
+---
+
+# Part 1 - Add cart token to session, save cart again
+
+<v-clicks at="1">
+
+- Store current cart token on `CheckoutConfirmPageLoadedEvent::class`
+
+</v-clicks>
+
+
+<v-clicks at="2">
+
+```php
+// ExamplePlugin/src/Subscriber/CheckoutConfirmPageLoadedEventSubscriber.php
+public function setCartTokenToSession(CheckoutConfirmPageLoadedEvent $event): void
+{
+    $request = $event->getRequest();
+    // set cart token to session
+    $request->getSession()->set(XgxCartExtension::SESSION_CART_TOKEN, $event->getPage()->getCart()->getToken());
+}
+```
+</v-clicks>
+
+<v-clicks at="3">
+
+- Decorate and override `Shopware\Core\Checkout\Cart\SalesChannel\CartOrderRoute::order`
+- Save cart after it got deleted from Shopware
+
+</v-clicks>
+
+
+<v-clicks at="5">
+
+```php
+// ExamplePlugin/src/Core/Checkout/Cart/SalesChannel/CartOrderRoute.php
+public function order(Cart $cart, SalesChannelContext $context, RequestDataBag $data): CartOrderRouteResponse
+{
+    $result = $this->originalCartOrderRoute->order($cart, $context, $data);
+
+    $this->cartPersister->save($cart, $context); // <== that is the key
+
+    return $result;
+}
+```
+
+</v-clicks>
+
+---
+layout: full
+clicks: 4
+---
+
+# Part 2 - Store current order ID in user session
+
+<v-clicks v-click-hide="4">
+
+- Create OrderPlacedSubscriber and subscribe to `CheckoutOrderPlacedEvent::class`
+- Inject RequestStack
+- If a order ID is already stored in user session, cancel previous order then store new one
+- Store current order ID into user session
+
+</v-clicks>
+
+<v-clicks at="4">
+
+```php
+// ExamplePlugin/src/Subscriber/OrderPlacedSubscriber.php
+public function onOrderPlaced(CheckoutOrderPlacedEvent $event): void
+{
+    $request = $this->requestStack->getCurrentRequest();
+    if (!$request || !$request->hasSession()) {
+        return;
+    }
+
+    $openOrderId = $request->getSession()->get(ExamplePlugin::SESSION_KEY_ORDER_ID);
+    if ($openOrderId) {
+        $this->orderService->orderStateTransition(
+            $openOrderId,
+            'cancel',
+            new ParameterBag(),
+            $event->getContext()
+        );
+    }
+
+    $orderId = $event->getOrderId();
+    if ($orderId) {
+        $request->getSession()->remove(ExamplePlugin::SESSION_FINALIZE_ORDER_URL);
+        $request->getSession()->set(ExamplePlugin::SESSION_KEY_ORDER_ID, $orderId);
+    }
+}
+```
+
+</v-clicks>
+
+---
+layout: full
+clicks: 4
+---
+
+# Part 3 - Delete cart finally
+
+<v-clicks v-click-hide="4">
+
+- Once a customer checked out successfully, we can delete the cart
+- A good entry point would be in `Shopware/Core/Checkout/Payment/Controller/PaymentController::finalize-transaction`
+- Depends on which payment methods are used
+- Latest point in order process where it makes sense is after succesful payment
+
+</v-clicks>
+
+
+<v-clicks at="4">
+
+```php
+// ExamplePlugin/src/Core/Checkout/Payment/Controller/PaymentController.php
+
+public function cleanupSessionStorage(
+    Request $request,
+    SalesChannelContext $salesChannelContext,
+    ?string $finishUrl
+  ): void
+{
+    $cartToken = $request->getSession()->get(ExamplePlugin::SESSION_CART_TOKEN);
+
+    $request->getSession()->remove(ExamplePlugin::SESSION_KEY_ORDER_ID);
+
+    if ($finishUrl) {
+        // in case you need finalize order url somehow
+        $request->getSession()->set(ExamplePlugin::SESSION_FINALIZE_ORDER_URL, $finishUrl);
+    }
+
+    if ($cartToken) {
+        // finally remove the cart from the data store
+        $this->cartPersister->delete($cartToken, $salesChannelContext);
+        $request->getSession()->remove(ExamplePlugin::SESSION_CART_TOKEN);
+    }
+}
+```
+
+</v-clicks>
+
+---
 layout: fact
 ---
-
-# Save the Date 24.06.2022
-
-Talk **"Journey of the cart"** at mooncom
-
-All topics of today + **How long a cart should actually live** 😉
-
-Find out more at <a href="https://www.mooncom.at">https://www.mooncom.at</a>
-
----
-layout: fact
-class: text-center
----
-
 # Thanks for your attention!!
+## Feel free to ask Questions now
 
 
 ---
