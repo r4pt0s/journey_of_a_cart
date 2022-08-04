@@ -19,12 +19,12 @@ jobs:
         run: echo 'Download database dump'
 
       - name: Setup python
-      - uses: actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           cache: 'pip' # caching pip dependencies
-      - run: pip install pynonymizer
 
       - name: Import production database and dump anonymized version
         run: |
+         pip install pynonymizer
          pynonymizer -h
