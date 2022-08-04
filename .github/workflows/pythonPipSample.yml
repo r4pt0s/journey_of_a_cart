@@ -1,0 +1,30 @@
+# install ddev on github runner =>
+# curl https://apt.fury.io/drud/gpg.key | sudo apt-key add -
+# echo "deb https://apt.fury.io/drud/ * *" | sudo tee -a /etc/apt/sources.list.d/ddev.list
+# sudo apt update && sudo apt install -y ddev
+
+# install pynonymizer on github runner => pip install pynonymizer
+
+name: Database anonymization
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  DatabaseDump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download database dump
+        run: echo 'Download database dump'
+
+      - name: Setup python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+      - run: pip install pynonymizer
+
+      - name: Import production database and dump anonymized version
+        run: |
+         pynonymizer -h
