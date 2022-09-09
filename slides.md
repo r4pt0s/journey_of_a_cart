@@ -595,6 +595,29 @@ Personal thoughts 🤔
 layout: full
 ---
 
+# What does Shopware think about it ?
+
+<v-clicks at="1">
+
+- On May 11th first Shopware meetup in the Moonshiner headquarter
+- Shopware pariticipated at the meetup as well
+- Finally they made it a thing on the Hockethon from May 13th - 15th because of my talk at the meetup
+
+</v-clicks>
+
+<div class="mt-14 grid place-items-center" v-click="4">
+
+<img src="/img/hockethon.png"/>
+<figcaption>
+  https://marco-steinhaeuser.de/hockethon-may-2022-kellerkinder.html
+</figcaption>
+
+</div>
+
+---
+layout: full
+---
+
 # Lifetime of a cart object in the data store
 
 ## Shopware default behaviour
@@ -728,7 +751,7 @@ public function setCartTokenToSession(CheckoutConfirmPageLoadedEvent $event): vo
 {
     $request = $event->getRequest();
     // set cart token to session
-    $request->getSession()->set(XgxCartExtension::SESSION_CART_TOKEN, $event->getPage()->getCart()->getToken());
+    $request->getSession()->set(ExamplePlugin::SESSION_CART_TOKEN, $event->getPage()->getCart()->getToken());
 }
 ```
 </v-clicks>
