@@ -601,7 +601,7 @@ layout: full
 
 - On May 11th first Shopware meetup in the Moonshiner headquarter
 - Shopware pariticipated at the meetup as well
-- Finally they made it a thing on the Hockethon from May 13th - 15th because of my talk at the meetup
+- Ultimately they made it a thing on the Hockethon from May 13th - 15th because of my talk at the meetup
 
 </v-clicks>
 
@@ -627,7 +627,7 @@ layout: full
 - Customer enjoys searching around in the online shop
 - Customer adds products to the cart
 - Customer proceeds through the checkout
-- Customer finializes the checkout with the payment process and hits the finish checkout button
+- Customer finalizes the checkout with the payment process and hits the finish checkout button
 
 </v-clicks>
 
@@ -657,7 +657,7 @@ layout: full
 
 
 <h3 v-click="1">
-  Something went wrong while fininalizing the Order 🤔
+  Something went wrong while finalizing the Order 🤔
 </h3>
 
 <v-clicks v-click="2" class="mt-8 mr-64">
@@ -688,7 +688,7 @@ clicks: 4
 <v-clicks v-click="1">
 
 - In case something went wrong, cart should not get dropped
-- Customer should have the ability to change the cart till the order is finially finished
+- Customer should have the ability to change the cart till the order is finally finished
 - It should always be possible to jump back and forth between payment and the cart
 
 </v-clicks>
@@ -718,7 +718,7 @@ layout: full
 - Add "Modify cart" button to the account/order/edit page or redirect to checkout/confirm directly
 - Store the current order ID in the user session on finalize order button click
 - Check if a order ID is stored in the user session if yes, cancel old order before creating new one
-- If customer reaches the final order page, finially drop the cart from data store
+- If customer reaches the final order page, finally drop the cart from data store
 
 </v-clicks>
 
