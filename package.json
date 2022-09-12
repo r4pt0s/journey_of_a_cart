@@ -1,7 +1,7 @@
 {
     "name": "journey_of_a_cart",
     "homepage": "https://r4pt0s.github.io/journey_of_a_cart/",
-    "private": true,
+    "private": false,
     "scripts": {
         "build": "slidev build",
         "dev": "slidev --open",
